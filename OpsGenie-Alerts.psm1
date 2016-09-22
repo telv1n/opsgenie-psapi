@@ -1,46 +1,16 @@
-<#
-.SYNOPSIS
-Powershell implementation of the OpsGenie Alerts API
-.DESCRIPTION
-
-.LINK
-TODO: Add this module to github and add link to this field
-
-#>
-
-
 function New-OpsGenieAlert {
-    param(
-        [Parameter(Mandatory=$true)]
-        [string]$APIKey,
-        [Parameter(Mandatory=$true)]
-        [string]$Message,
-
-        [string]$Teams,
-        [string]$Alias,
-        [string]$Description,
-        [string]$Recipients,
-        [string]$Actions,
-        [string]$Source,
-        [string]$Tags,
-        [object]$Details,
-        [string]$Entity,
-        [string]$User,
-        [string]$Note
-    )
-
     <#
         .SYNOPSIS
-        Function to create OpsGenie alert via the OpsGenie Alerts API
+        Create OpsGenie alerts via the OpsGenie Alerts API
         
         .DESCRIPTION
-
+        This function programmatically allows for the creation of alerts via the OpsGenie Alerts RESTful API. Alerts are sent via POST using standard JSON notation.
 
         .PARAMETER APIKey
         Specifies the Opsgenie APIKey required for authenticating to the OpsGenie RESTful API.
 
         .PARAMETER Message
-        Alert text limited to 130 characters.
+        Alert message text. This parameter is limited to 130 characters.
 
         .PARAMETER Teams
         List of team names which will be responsible for the alert. Team escalation policies are run to calculate which users will receive notifications. Teams which are exceeding the limit (50 teams) are ignored.
@@ -49,7 +19,7 @@ function New-OpsGenieAlert {
         Used for alert deduplication. A user defined identifier for the alert. There can be only one alert with open status with the same alias. Provides ability to assign a known id and later use this id to perform additional actions such as log, close, attach for the same alert. 
 
         .PARAMETER Description
-        This field can be used to provide a detailed description of the alert, anything that may not have fit in the Message field. Limited to 15000 characters.
+        This field can be used to provide a detailed description of the alert, anything that may not have fit in the Message field. Limited to 15,000 characters.
 
         .PARAMETER Recipients
         Optional user, group, schedule or escalation names to calculate which users will receive the notifications of the alert. Recipients which are exceeding the limit (50 recipients) are ignored.
@@ -77,7 +47,7 @@ function New-OpsGenieAlert {
 
         .EXAMPLE
         New-OpsGenieAlert -APIKey "eb243592-faa2-4ba2-a551q-1afdf565c889" -Message "WebServer3 is down" -Teams ["operations", "developers"]
-        Response will look like the following object:
+        Response will come back in a JSON object similar to the following:
         {
             "message" : "alert created",
             "alertId" : "d85b4c10-ca86-45f3-94a0-0685de932a86",
@@ -85,7 +55,25 @@ function New-OpsGenieAlert {
             "code" : 200
         }
     #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$APIKey,
+        [Parameter(Mandatory=$true)]
+        [string]$Message,
 
+        [string]$Teams,
+        [string]$Alias,
+        [string]$Description,
+        [string]$Recipients,
+        [string]$Actions,
+        [string]$Source,
+        [string]$Tags,
+        [object]$Details,
+        [string]$Entity,
+        [string]$User,
+        [string]$Note
+    )
+    
     #Build Alert Request Body
     $body = @{
         "apiKey" = $APIKey
