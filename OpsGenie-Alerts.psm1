@@ -100,6 +100,46 @@ function New-OpsGenieAlert {
 }
 
 function Get-OpsGenieAlert {
+    <#
+        .SYNOPSIS
+        Get details of an Alert via the OpsGenie Alerts API
+        
+        .DESCRIPTION
+        
+
+        .PARAMETER APIKey
+        Specifies the Opsgenie APIKey required for authenticating to the OpsGenie RESTful API.
+
+        .PARAMETER ID
+        
+
+        .PARAMETER Alias
+
+
+        .PARAMETER TinyID
+
+
+        .PARAMETER ListNotes
+        
+
+        .PARAMETER ListLogs
+
+
+        .PARAMETER ListRecipients
+        
+
+        .PARAMETER Limit
+
+
+        .PARAMETER Order
+
+
+        .PARAMETER LastKey
+
+
+        .EXAMPLE
+        
+    #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$APIKey,
@@ -115,9 +155,60 @@ function Get-OpsGenieAlert {
         [string]$Order,
         [string]$LastKey
     )
+
+
 }
 
 function Get-OpsGenieAlertList {
+    <#
+        .SYNOPSIS
+        List OpsGenie Alerts via the OpsGenie Alerts API
+        
+        .DESCRIPTION
+        This function encapsulates both the List Alerts and List Alerts Count endpoints of the OpsGenie Alerts API. Count is accessible using the -Count switch parameter.
+
+        .PARAMETER APIKey
+        Specifies the Opsgenie APIKey required for authenticating to the OpsGenie RESTful API.
+
+        .PARAMETER CreatedAfter
+        
+
+        .PARAMETER CreatedBefore
+
+
+        .PARAMETER UpdatedAfter
+
+
+        .PARAMETER UpdatedBefore
+        
+
+        .PARAMETER Limit
+
+
+        .PARAMETER Status
+        
+
+        .PARAMETER SortBy
+
+
+        .PARAMETER Order
+
+
+        .PARAMETER Teams
+
+
+        .PARAMETER Tags
+        
+
+        .PARAMETER TagsOperator
+
+        
+        .PARAMETER Count
+
+
+        .EXAMPLE
+        
+    #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$APIKey,
@@ -169,7 +260,6 @@ function Get-OpsGenieAlertList {
     if ($Tags -ne '') {
         $baseURL += '&tags='+$Tags
     }
-    Write-Host $baseURL
     return Invoke-RestMethod -Method Get -Uri $baseURL
 }
 
