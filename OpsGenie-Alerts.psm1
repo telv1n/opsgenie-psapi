@@ -34,7 +34,8 @@ function New-OpsGenieAlert {
         A comma separated list of labels attached to the alert. You can overwrite Quiet Hours setting for urgent alerts by adding OverwritesQuietHours tag. Tags which are exceeding the number limit are ignored. Tag names which are longer than length limit are shortened.
 
         .PARAMETER Details
-        Set of user defined properties. This will be specified as a nested JSON map such as: "details" : {"prop1":"prop1Value", "prop2":"prop2Value"} 
+        Set of user defined properties. This will be converted to a nested JSON map such as: "details" : {"prop1":"prop1Value", "prop2":"prop2Value"}.
+        Takes a Powershell hash table object as input, ie. @{"prop1" = "prop1Value"; "prop2" = "prop2Value"}
 
         .PARAMETER Entity
         The entity the alert is related to.
@@ -45,15 +46,17 @@ function New-OpsGenieAlert {
         .PARAMETER Note
         Additional alert note.
 
-        .EXAMPLE
-        New-OpsGenieAlert -APIKey "eb243592-faa2-4ba2-a551q-1afdf565c889" -Message "WebServer3 is down" -Teams ["operations", "developers"]
-        Response will come back in a JSON object similar to the following:
-        {
-            "message" : "alert created",
-            "alertId" : "d85b4c10-ca86-45f3-94a0-0685de932a86",
-            "status" : "successful",
-            "code" : 200
-        }
+        .EXAMPLE 
+        New-OpsGenieAlert -APIKey "eb243592-faa2-4ba2-a551q-1afdf565c889" -Message "WebServer3 is down" -Teams "operations", "developers"
+
+        Creates a new alert with message "WebServer3 is down" and assign it to the "operations" and "developers" teams.
+
+        The command will return an object similar to the following:
+        took    : 126
+        code    : 200
+        alertId : bdd95b05-9168-43f1-b878-c78e95beb222
+        message : alert created
+        status  : successful
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -61,7 +64,7 @@ function New-OpsGenieAlert {
         [Parameter(Mandatory=$true)]
         [string]$Message,
 
-        [string]$Teams,
+        [Array]$Teams,
         [string]$Alias,
         [string]$Description,
         [string]$Recipients,
@@ -105,7 +108,11 @@ function Get-OpsGenieAlert {
         Get details of an Alert via the OpsGenie Alerts API
         
         .DESCRIPTION
-        
+        This function extends the following endpoints of the OpsGenie Alerts API using switch parameters (see parameter definitions for complete details):
+        -Get Alert Request
+        -List Alert Notes Request
+        -List Alert Logs Request
+        -List Alert Recipients Request
 
         .PARAMETER APIKey
         Specifies the Opsgenie APIKey required for authenticating to the OpsGenie RESTful API.
@@ -204,10 +211,13 @@ function Get-OpsGenieAlertList {
 
         
         .PARAMETER Count
-
+        Switch parameter to request a count of alerts instead of a list of alerts. See the "Count Alerts Request" example.
 
         .EXAMPLE
         
+
+        .EXAMPLE
+
     #>
     param(
         [Parameter(Mandatory=$true)]
