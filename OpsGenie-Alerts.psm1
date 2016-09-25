@@ -13,7 +13,7 @@ function New-OpsGenieAlert {
         Alert message text. This parameter is limited to 130 characters.
 
         .PARAMETER Teams
-        List of team names which will be responsible for the alert. Team escalation policies are run to calculate which users will receive notifications. Teams which are exceeding the limit (50 teams) are ignored.
+        List of team names which will be responsible for the alert. Team escalation policies are run to calculate which users will receive notifications. Teams which exceed the limit (50 teams) are ignored. Teams that do not exist will be ignored.
 
         .PARAMETER Alias
         Used for alert deduplication. A user defined identifier for the alert. There can be only one alert with open status with the same alias. Provides ability to assign a known id and later use this id to perform additional actions such as log, close, attach for the same alert. 
@@ -57,6 +57,12 @@ function New-OpsGenieAlert {
         alertId : bdd95b05-9168-43f1-b878-c78e95beb222
         message : alert created
         status  : successful
+
+        .EXAMPLE
+        New-OpsGenieAlert -APIKey "eb243592-faa2-4ba2-a551q-1afdf565c889" -Message "Elevated CPU on server win-util1" -Teams "devops" -Recipients "John Doe" -Details @{"GitHub Link" = "https://github.com/telv1n/opsgenie-psapi/"; "Azure Portal" = "https://portal.azure.com"}
+        
+        New OpsGenie alert with team, recipients, and extra properties added. Note that when a recipient is added, the alert does not page out to the team(s) assigned.
+        The object returned will be the same as the previous example indicates.
     #>
     param(
         [Parameter(Mandatory=$true)]
