@@ -124,30 +124,36 @@ function Get-OpsGenieAlert {
         Specifies the Opsgenie APIKey required for authenticating to the OpsGenie RESTful API.
 
         .PARAMETER ID
-        
+        ID of the alert to be retrieved.
 
         .PARAMETER Alias
-
+        Alias of the alert to be retrieved. Using alias will only retrieve an open alert with that alias if it exists.
 
         .PARAMETER TinyID
-
+        Short ID assigned to the alert. All requests support tinyId but using this field is not recommended because it rolls and may not be unique.
 
         .PARAMETER ListNotes
-        
+        The ListNotes switch parameter will retrieve the notes from a specified alert.
 
         .PARAMETER ListLogs
-
+        The ListLogs switch parameter will retrieve the logs from a specified alert.
 
         .PARAMETER ListRecipients
-        
+        The ListNotes parameter will retrieve the recipients of a specified alert.
 
         .PARAMETER Limit
-
+        Page size. Default is 100. This parameter is only used with either the ListNotes or the ListLogs switch parameters.
 
         .PARAMETER Order
-
+        The order (according to timestamp) in which the results are returned. Accepts the following: [asc/desc]. The default order is descending. This parameter is only used with either the ListNotes or the ListLogs switch parameters.
 
         .PARAMETER LastKey
+        Key which will be used in pagination. This parameter is only used with either the ListNotes or the ListLogs switch parameters.
+
+        .EXAMPLE
+
+
+        .EXAMPLE
 
 
         .EXAMPLE
