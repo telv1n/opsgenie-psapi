@@ -1,3 +1,5 @@
+#TODO: Add exit codes to all errors.
+
 function New-OpsGenieAlert {
     <#
         .SYNOPSIS
@@ -157,7 +159,7 @@ function Get-OpsGenieAlert {
 
 
         .EXAMPLE
-        
+
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -170,12 +172,79 @@ function Get-OpsGenieAlert {
         [switch]$ListNotes,
         [switch]$ListLogs,
         [switch]$ListRecipients,
-        [string]$Limit,
-        [string]$Order,
+        [int]$Limit = 100,
+        [string][ValidateSet("asc", "desc")]$Order = "desc",
         [string]$LastKey
     )
 
 
+
+    # Verify that only a single switch is used and set baseURL based on switch.
+    if ($ListNotes -and !$ListLogs -and !$ListRecipients) {
+        $baseURL = "https://api.opsgenie.com/v1/json/alert/note?apiKey=$APIKey&order=$Order"
+        if ($ID -ne '') {
+            $baseURL += '&id='+$ID
+        }
+        if ($Alias -ne '') {
+            $baseURL += '&alias='+$Alias
+        }
+        if ($TinyID -ne '') {
+            $baseURL += '&tinyId='+$TinyID
+        }
+        if ($LastKey -ne '') {
+            $baseURL += '&lastKey='+$LastKey
+        }
+        return Invoke-RestMethod -Method Get -Uri $baseURL
+    }
+
+    elseif (!$ListNotes -and $ListLogs -and !$ListRecipients) {
+        $baseURL = "https://api.opsgenie.com/v1/json/alert/log?apiKey=$APIKey&order=$Order"
+        if ($ID -ne '') {
+            $baseURL += '&id='+$ID
+        }
+        if ($Alias -ne '') {
+            $baseURL += '&alias='+$Alias
+        }
+        if ($TinyID -ne '') {
+            $baseURL += '&tinyId='+$TinyID
+        }
+        if ($LastKey -ne '') {
+            $baseURL += '&lastKey='+$LastKey
+        }
+        return Invoke-RestMethod -Method Get -Uri $baseURL
+    }
+
+    elseif (!$ListNotes -and !$ListLogs -and $ListRecipients) {
+       $baseURL = "https://api.opsgenie.com/v1/json/alert/recipient?apiKey=$APIKey"
+        if ($ID -ne '') {
+            $baseURL += '&id='+$ID
+        }
+        if ($Alias -ne '') {
+            $baseURL += '&alias='+$Alias
+        }
+        if ($TinyID -ne '') {
+            $baseURL += '&tinyId='+$TinyID
+        }
+        return Invoke-RestMethod -Method Get -Uri $baseURL 
+    }
+
+    elseif (!$ListNotes -and !$ListLogs -and !$ListRecipients) {
+        $baseURL = "https://api.opsgenie.com/v1/json/alert?apiKey=$APIKey"
+        if ($ID -ne '') {
+            $baseURL += '&id='+$ID
+        }
+        if ($Alias -ne '') {
+            $baseURL += '&alias='+$Alias
+        }
+        if ($TinyID -ne '') {
+            $baseURL += '&tinyId='+$TinyID
+        }
+        Write-Host $baseURL
+    }
+
+    else {
+        Write-Error "Please specify zero or one of -ListNotes, -ListLogs, -ListRecipients"
+    }
 }
 
 function Get-OpsGenieAlertList {
@@ -249,6 +318,7 @@ function Get-OpsGenieAlertList {
 
         [switch]$Count
     )
+    # Adds default limit if not specified for Count or List requests.
     if ($Count) {
         if ($Limit -eq '') {
             $Limit = 100000
@@ -261,6 +331,8 @@ function Get-OpsGenieAlertList {
         }
         $baseURL = 'https://api.opsgenie.com/v1/json/alert?apiKey='+$APIKey+'&limit='+$Limit+'&order='+$Order+'&sortBy='+$SortBy+'&tagsOperator='+$TagsOperator
     }
+
+    # Add optional parameters to the baseURL if specified. Ignores them otherwise.
     if ($CreatedAfter -ne '') {
         $baseURL += '&createdAfter='+$CreatedAfter
     }
@@ -282,6 +354,8 @@ function Get-OpsGenieAlertList {
     if ($Tags -ne '') {
         $baseURL += '&tags='+$Tags
     }
+
+    #Send the request off to the OpsGenie Alerts API
     return Invoke-RestMethod -Method Get -Uri $baseURL
 }
 
