@@ -141,7 +141,7 @@ function Get-OpsGenieAlert {
         The ListLogs switch parameter will retrieve the logs from a specified alert.
 
         .PARAMETER ListRecipients
-        The ListNotes parameter will retrieve the recipients of a specified alert.
+        The ListRecipients switch parameter will retrieve the recipients of a specified alert.
 
         .PARAMETER Limit
         Page size. Default is 100. This parameter is only used with either the ListNotes or the ListLogs switch parameters.
